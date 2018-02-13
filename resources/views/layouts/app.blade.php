@@ -35,10 +35,10 @@
           <ul class="nav navbar-nav navbar-right">
             @if (Auth::guest())
             <li>
-              <a href="{{ url('/auth/login') }}">Login</a>
+              <a href="{{ route('login') }}">Login</a>
             </li>
             <li>
-              <a href="{{ url('/auth/register') }}">Register</a>
+              <a href="{{ route('register') }}">Register</a>
             </li>
             @else
             <li class="dropdown">

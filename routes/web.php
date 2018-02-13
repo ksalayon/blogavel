@@ -15,24 +15,26 @@
 //     return view('welcome');
 // });
 //
-// Auth::routes();
+
 //
-// Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/','PostController@index');
+Auth::routes();
 // Route::get('/home',['as' => 'home', 'uses' => 'PostController@index']);
 Route::get('/home', 'PostController@index')->name('home');
 //authentication
+
 
 // Route::controllers([
 //     'auth' => 'Auth\AuthController',
 //     'password' => 'Auth\PasswordController',
 // ]);
 
-Route::group(['middleware' => ['web'], 'namespace'=>'App\Http\Controllers'], function () {
-     Route::auth();
-});
+// Route::group(['middleware' => ['web'], 'namespace'=>'App\Http\Controllers'], function () {
+//      Route::auth();
+// });
 
 // Route::get('/login',[
 //     'uses' => 'Auth\AuthController@login',
@@ -49,8 +51,11 @@ Route::group(['middleware' => ['web'], 'namespace'=>'App\Http\Controllers'], fun
 //     'uses' => 'Auth\AuthController@logout',
 //     'as'   => 'logout'
 // ]);
+Route::resource('auth', 'Auth\AuthController');
+// Route::get('auth/logout','UserController@logout');
 
-Route::get('auth/logout','UserController@logout');
+// Route::resource('auth', 'Auth\AuthController');
+// Route::resource('password', 'Auth\PasswordController');
 // Route::resource('password', 'Auth\PasswordController');
 //Will probably use
 // Route::middleware(['first', 'second'])->group(function () {

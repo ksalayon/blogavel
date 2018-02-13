@@ -1,9 +1,10 @@
-<?phpnamespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Posts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller {
     /*
@@ -70,5 +71,11 @@ class UserController extends Controller {
         $data['latest_posts'] = $data['user']->posts->where('active', '1')->take(5);
         $data['latest_comments'] = $data['user']->comments->take(5);
         return view('admin.profile', $data);
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
     }
 }

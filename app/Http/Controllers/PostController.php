@@ -5,6 +5,7 @@ use Redirect;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostFormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -31,13 +32,17 @@ class PostController extends Controller
         }
     }
 
-    public function store(PostFormRequest $request)
+    public function store(Request $request)
     {
+        // echo '<pre>';
+        //     print_r($request);
+        // echo '</pre>';
         $post = new Posts();
         $post->title = $request->get('title');
         $post->body = $request->get('body');
         $post->slug = str_slug($post->title);
-        $post->author_id = $request->user()->id;
+        // $post->author_id = $request->user()->id;
+        $post->author_id = Auth::id();
         if($request->has('save'))
         {
             $post->active = 0;
@@ -67,7 +72,7 @@ class PostController extends Controller
     public function edit(Request $request, $slug)
     {
         $post = Posts::where('slug',$slug)->first();
-        if($post && ($request->user()->id == $post->author_id || $request->user()->is_admin())) {
+        if($post && (Auth::id() == $post->author_id || $request->user()->is_admin())) {
             return view('posts.edit')->with('post',$post);
         } else {
             return redirect('/')->withErrors('You do not have permission to edit this post.');

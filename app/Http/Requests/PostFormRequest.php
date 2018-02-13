@@ -1,8 +1,9 @@
 <?php namespace App\Http\Requests;
-use App\Http\Requests\Request;
+// use App\Http\Requests\Request;
+use Illuminate\Http\Request as BaseRequest;
 use App\User;
 use Auth;
-class PostFormRequest extends Request {
+class PostFormRequest extends BaseRequest {
     /**
     * Determine if the user is authorized to make this request.
     *

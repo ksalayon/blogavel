@@ -52,6 +52,7 @@ Route::get('/home', 'PostController@index')->name('home');
 //     'as'   => 'logout'
 // ]);
 Route::resource('auth', 'Auth\AuthController');
+Route::get('/logout', 'Auth\LoginController@logout');
 // Route::get('auth/logout','UserController@logout');
 
 // Route::resource('auth', 'Auth\AuthController');

@@ -1,9 +1,9 @@
 <?php namespace App\Http\Requests;
-// use App\Http\Requests\Request;
-use Illuminate\Http\Request as BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use App\User;
+use App\Post;
 use Auth;
-class PostFormRequest extends BaseRequest {
+class PostFormRequest extends FormRequest {
     /**
     * Determine if the user is authorized to make this request.
     *
@@ -26,8 +26,15 @@ class PostFormRequest extends BaseRequest {
     {
         return [
             'title' => 'required|unique:posts|max:255',
-            'title' => array('Regex:/^[A-Za-z0-9 ]+$/'),
             'body' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required' => 'Please enter a title yo!',
+            'body.required'  => 'The silence is deafening!',
         ];
     }
 }

@@ -32,7 +32,7 @@ class PostController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(PostFormRequest $request)
     {
         // echo '<pre>';
         //     print_r($request);

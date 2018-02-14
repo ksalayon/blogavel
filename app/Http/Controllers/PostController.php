@@ -34,14 +34,10 @@ class PostController extends Controller
 
     public function store(PostFormRequest $request)
     {
-        // echo '<pre>';
-        //     print_r($request);
-        // echo '</pre>';
         $post = new Posts();
         $post->title = $request->get('title');
         $post->body = $request->get('body');
         $post->slug = str_slug($post->title);
-        // $post->author_id = $request->user()->id;
         $post->author_id = Auth::id();
         if($request->has('save'))
         {
@@ -56,6 +52,7 @@ class PostController extends Controller
 
         $post->save();
         return redirect('edit/'.$post->slug)->withMessage($message);
+
     }
 
     public function show($slug)

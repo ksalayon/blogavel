@@ -13,10 +13,10 @@ class UserController extends Controller {
     * @param int $id
     * @return view
     */
+
     public function user_posts($id)
     {
-        //
-        $posts = Posts::where('author_id',$id)->where('active',1)->orderBy('created_at','desc')->paginate(5);
+        $posts = Posts::getAllByUser($id, Posts::PUBLISHED);
         $title = User::find($id)->name;
         return view('home')->withPosts($posts)->withTitle($title);
     }
@@ -28,9 +28,8 @@ class UserController extends Controller {
     */
     public function user_posts_all(Request $request)
     {
-        //
         $user = $request->user();
-        $posts = Posts::where('author_id',$user->id)->orderBy('created_at','desc')->paginate(5);
+        $posts = Posts::getAllByUser($user->id);
         $title = $user->name;
         return view('home')->withPosts($posts)->withTitle($title);
     }

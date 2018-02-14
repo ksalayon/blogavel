@@ -1,7 +1,9 @@
 <?php namespace App;
-use Illuminate\Database\Eloquent\Model;
-// instance of Posts class will refer to posts table in database
-class Posts extends Model {
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+
+class Posts extends Eloquent {
+
+    protected $connection = 'mongodb';
     //restricts columns from modifying
     protected $guarded = [];
     // posts has many comments

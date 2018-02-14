@@ -1,6 +1,8 @@
 <?php namespace App;
-use Illuminate\Database\Eloquent\Model;
-class Comments extends Model {
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+
+class Comments extends Eloquent {
+    protected $connection = 'mongodb';
     //comments table in database
     protected $guarded = [];
     // user who has commented

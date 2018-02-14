@@ -1,11 +1,15 @@
 <?php namespace App;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
-    use Authenticatable, CanResetPassword;
+    use Authenticatable, CanResetPassword, HybridRelations;
+
+    protected $connection = 'mysql';
+
     /**
     * The database table used by the model.
     *
@@ -29,6 +33,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function posts()
     {
         return $this->hasMany('App\Posts','author_id');
+        //return $this->embedsMany('App\Posts');
     }
 
     // user has many comments

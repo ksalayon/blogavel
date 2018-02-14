@@ -1,6 +1,9 @@
 <?php namespace App;
-use Illuminate\Database\Eloquent\Model;
-class Comments extends Model {
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use App\Posts;
+
+class Comments extends Eloquent {
+    protected $connection = 'mongodb';
     //comments table in database
     protected $guarded = [];
     // user who has commented
@@ -12,5 +15,30 @@ class Comments extends Model {
     public function post()
     {
         return $this->belongsTo('App\Posts','on_post');
+    }
+
+
+    public static function getAllByUser($userId, $take = 5)
+    {
+        $comments = self::where('from_user',(int)$userId)
+            ->orderBy('created_at','desc')
+            ->take($take)
+            ->get();
+        return $comments;
+
+        // $comments = self::where('from_user',(int)$userId)
+        //     ->orderBy('created_at','desc')
+        //     ->take($take)
+        //     ->get();
+        // $data['comments'] = [];
+        //
+        //
+        // foreach($comments as $key => $val){
+        //     $data['comments'][$key] = $val;
+        //     $data['comments'][$key]['posts'] = Posts::find($val->on_post);
+        // }
+        //
+        //
+        // return $data;
     }
 }

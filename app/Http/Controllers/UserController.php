@@ -3,6 +3,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Posts;
+use App\Comments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,10 +14,10 @@ class UserController extends Controller {
     * @param int $id
     * @return view
     */
+
     public function user_posts($id)
     {
-        //
-        $posts = Posts::where('author_id',$id)->where('active',1)->orderBy('created_at','desc')->paginate(5);
+        $posts = Posts::getAllByUser($id, Posts::PUBLISHED);
         $title = User::find($id)->name;
         return view('home')->withPosts($posts)->withTitle($title);
     }
@@ -28,9 +29,8 @@ class UserController extends Controller {
     */
     public function user_posts_all(Request $request)
     {
-        //
         $user = $request->user();
-        $posts = Posts::where('author_id',$user->id)->orderBy('created_at','desc')->paginate(5);
+        $posts = Posts::getAllByUser($user->id);
         $title = $user->name;
         return view('home')->withPosts($posts)->withTitle($title);
     }
@@ -58,18 +58,18 @@ class UserController extends Controller {
             return redirect('/');
         }
 
-        if ($request -> user() && $data['user'] -> id == $request -> user() -> id) {
+        if ($request->user() && $data['user']->id == $request->user()->id) {
             $data['author'] = true;
         } else {
             $data['author'] = null;
         }
 
-        $data['comments_count'] = $data['user']->comments->count();
-        $data['posts_count'] = $data['user']->posts->count();
-        $data['posts_active_count'] = $data['user']->posts->where('active', '1')->count();
+        $data['comments_count'] = $data['user']->comments()->count();
+        $data['posts_count'] = $data['user']->posts()->count();
+        $data['posts_active_count'] = $data['user']->posts()->where('active', '1')->count();
         $data['posts_draft_count'] = $data['posts_count'] - $data['posts_active_count'];
-        $data['latest_posts'] = $data['user']->posts->where('active', '1')->take(5);
-        $data['latest_comments'] = $data['user']->comments->take(5);
+        $data['latest_posts'] = Posts::getAllByUser($id);
+        $data['latest_comments'] = Comments::getAllByUser($id, 1);
         return view('admin.profile', $data);
     }
 

@@ -40,7 +40,7 @@
     </li>
     <li class="list-group-item">
       Total Comments {{$comments_count}}
-  </li>
+    </li>
   </ul>
 </div>
 <div class="panel panel-default">
@@ -56,17 +56,20 @@
     @else
     <p>You have not written any post till now.</p>
     @endif
-</div>
+  </div>
 </div>
 <div class="panel panel-default">
-  <div class="panel-heading"><h3>Latest Comments</h3></div>
+  <div class="panel-heading"><h3>Latest 3 Comments</h3></div>
   <div class="list-group">
     @if(!empty($latest_comments[0]))
     @foreach($latest_comments as $latest_comment)
       <div class="list-group-item">
-        <p>{{ $latest_comment->body }}</p>
-        <p>On {{ $latest_comment->created_at->format('M d,Y \a\t h:i a') }}</p>
-        </div>
+        @foreach($latest_comment['comments'] as $comment)
+            <p>{{ $comment['body'] }}</p>
+            <p>On {{ $comment['created_at']->format('M d,Y \a\t h:i a') }}</p>
+        @endforeach
+        <p>On post <a href="{{ url('/'.$latest_comment['slug']) }}">{{ $latest_comment['slug'] }}</a></p>
+      </div>
     @endforeach
     @else
     <div class="list-group-item">

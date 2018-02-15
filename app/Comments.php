@@ -1,6 +1,8 @@
 <?php namespace App;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use App\Posts;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class Comments extends Eloquent {
     protected $connection = 'mongodb';
@@ -20,25 +22,41 @@ class Comments extends Eloquent {
 
     public static function getAllByUser($userId, $take = 5)
     {
-        $comments = self::where('from_user',(int)$userId)
-            ->orderBy('created_at','desc')
-            ->take($take)
-            ->get();
-        return $comments;
+        $qPosts = Posts::where('comments.from_user', '=', (int)$userId)
+            ->where('active', '=', 1)
+            ->select('title', 'slug', 'comments')
+            ->paginate(3);
 
-        // $comments = self::where('from_user',(int)$userId)
-        //     ->orderBy('created_at','desc')
-        //     ->take($take)
-        //     ->get();
-        // $data['comments'] = [];
-        //
-        //
-        // foreach($comments as $key => $val){
-        //     $data['comments'][$key] = $val;
-        //     $data['comments'][$key]['posts'] = Posts::find($val->on_post);
-        // }
-        //
-        //
-        // return $data;
+        $posts = [];
+        foreach($qPosts as $pKey => $pVal){
+
+            $comments = $pVal->comments()->map(function ($value, $key) use ($userId) {
+                if($value->from_user == $userId){
+                    return [
+                        'body' => $value->body,
+                        'created_at' => $value->created_at,
+                        'from_user' => $value->from_user,
+                    ];
+                }
+            });
+
+            $tmpPost['_id'] = $pVal->_id;
+            $tmpPost['title'] = $pVal->title;
+            $tmpPost['slug'] = $pVal->slug;
+            $tmpPost['comments'] = [];
+            if(!empty($comments)){
+                foreach($comments as $cKey => $cVal){
+                    if(!empty($cVal) && $cVal !== NULL){
+                        array_push($tmpPost['comments'], $cVal);
+                    }
+                }
+            }
+
+            array_push($posts, $tmpPost);
+        }
+
+        $postsCollection = collect($posts);
+
+        return $postsCollection;
     }
 }

@@ -40,3 +40,9 @@ and it acts as an adapter for the core Laravel ORM and query builder implementat
 Refactored Post and Comment model relationship so that comments are embedded into posts
 for a more nosql style of data structure.
 ```
+
+* Setup Unit Test and Testing Environment/DB
+```
+Setup seeder with generate fake entries
+Did a workaround for truncating DB via DatabaseTransactions by manually truncating models on each unit setup
+```

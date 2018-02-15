@@ -5,11 +5,8 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Posts;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+
 
 class PostsTest extends TestCase
 {

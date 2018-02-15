@@ -13,39 +13,55 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PostsTest extends TestCase
 {
-    use DatabaseTransactions;
 
     public function setUp()
     {
         parent::setUp();
+        Posts::truncate();
         factory(Posts::class)->create();
-
-    /*More code*/
     }
     /**
      * A basic test example.
      *
      * @return void
      */
-    // public function testPostStore()
-    // {
-    //     $post = new Posts();
-    //     $post->title = 'An Awesome Posts';
-    //     $post->body = 'Lorem ipsum dolor sit amet';
-    //     $post->slug = str_slug($post->title);
-    //     $post->author_id = 1;
-    //
-    //     $this->assertEquals('An Awesome Posts', $post->title);
-    //     $this->assertTrue(true);
-    //
-    //     $post->save();
-    //
-    //     $newPost = Posts::first();
-    //     $this->assertEquals($post->title, $newPost->title);
-    // }
-
-    public function test_have_10_posts()
+    public function testPostStore()
     {
-        $this->assertEquals(10, Posts::count());
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 1;
+
+        $this->assertEquals('An Awesome Posts', $post->title);
+        $this->assertTrue(true);
+
+        $post->save();
+
+        $newPost = Posts::find($post->id);
+        $this->assertEquals($post->title, $newPost->title);
     }
+
+    public function testGetAllByUser()
+    {
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 1;
+        $post->save();
+
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 1;
+        $post->save();
+
+        $userPosts = Posts::getAllByUser(5);
+        $this->assertEquals(count($userPosts), 2);
+    }
+
 }

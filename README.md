@@ -14,7 +14,7 @@
 Using Laravel Valet - Pretty neat tool, I should say :)
 ```
 
-* Based on a blog tutorial made for < Laravel 5.3 (With lots of deprecated, Facades, etc)
+* Based on a blog tutorial made for Laravel 5.2 - I think? (With lots of deprecated, Facades, etc)
 ```
 http://www.findalltogether.com/tutorial/simple-blog-application-in-laravel-5-part-1-setup-database/
 I had to be resourceful about the task. Following the tutorial did not come free from pain though:

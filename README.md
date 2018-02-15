@@ -1,6 +1,11 @@
 # The Blogavel
 ## A Laravel Blog using MongoDB & MySQL Hybrid connections
-
+```
+* With Login and Registration Module
+* CRUD features for Blog posts by admin
+* Comments section for posts
+* Admin profile page for admin and simple stat reporting
+```
 ## Built with
 * [Laravel 5.5]
 * [PHP 7.2]

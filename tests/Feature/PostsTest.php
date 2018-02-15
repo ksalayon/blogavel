@@ -64,4 +64,64 @@ class PostsTest extends TestCase
         $this->assertEquals(count($userPosts), 2);
     }
 
+    public function testGetAllDraftByUser()
+    {
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 0;
+        $post->save();
+
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 0;
+        $post->save();
+
+        $post = new Posts();
+        $post->title = 'An Awesome Posts II';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 1;
+        $post->save();
+
+        $userPosts = Posts::getAllByUser(5, Posts::DRAFT);
+        $this->assertEquals(count($userPosts), 2);
+    }
+
+    public function testGetAllPublishedByUser()
+    {
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 0;
+        $post->save();
+
+        $post = new Posts();
+        $post->title = 'An Awesome Posts';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 0;
+        $post->save();
+
+        $post = new Posts();
+        $post->title = 'An Awesome Posts II';
+        $post->body = 'Lorem ipsum dolor sit amet';
+        $post->slug = str_slug($post->title);
+        $post->author_id = 5;
+        $post->active = 1;
+        $post->save();
+
+        $userPosts = Posts::getAllByUser(5, Posts::PUBLISHED);
+        $this->assertEquals(count($userPosts), 1);
+    }
+
 }

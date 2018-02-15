@@ -25,6 +25,7 @@ class Comments extends Eloquent {
         $qPosts = Posts::where('comments.from_user', '=', (int)$userId)
             ->where('active', '=', 1)
             ->select('title', 'slug', 'comments')
+            ->orderBy('created_at','desc')
             ->paginate(3);
 
         $posts = [];

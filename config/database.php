@@ -89,6 +89,15 @@ return [
                 'database' => 'admin' // sets the authentication database required by mongo 3
             ]
         ],
+        'testing' => [
+            'driver'   => 'mongodb',
+            'host'     => env('DB_HOST', 'localhost'),
+            'port'     => env('MONGODB_PORT'),
+            'database' => 'mongodb_test',
+            'options'  => [
+                'database' => 'admin' // sets the authentication database required by mongo 3
+            ]
+        ],
     ],
 
     /*

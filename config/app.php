@@ -176,8 +176,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        /*
+         * MongoDBV Service Providers...
+         */
         Jenssegers\Mongodb\MongodbServiceProvider::class,
+        Jenssegers\Mongodb\MongodbQueueServiceProvider::class,
 
     ],
 

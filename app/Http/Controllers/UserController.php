@@ -66,8 +66,8 @@ class UserController extends Controller {
         }
 
         $data['comments_count'] = $data['user']->comments()->count();
-        $data['posts_count'] = $data['user']->posts()->count();
-        $data['posts_active_count'] = $data['user']->posts()->where('active', '1')->count();
+        $data['posts_count'] = Posts::getAllByUser($id)->count();
+        $data['posts_active_count'] = Posts::getAllByUser($id, Posts::PUBLISHED)->count();
         $data['posts_draft_count'] = $data['posts_count'] - $data['posts_active_count'];
         $data['latest_posts'] = Posts::getAllByUser($id);
         $data['latest_comments'] = Comments::getAllByUser($id, 1);

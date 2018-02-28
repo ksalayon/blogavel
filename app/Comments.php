@@ -22,13 +22,9 @@ class Comments extends Eloquent {
     public static function store($data)
     {
         try{
-            $comment = new Comments([
-                'from_user' => $data['Comment']['from_user'],
-                'on_post' => $data['Comment']['on_post'],
-                'body' => $data['Comment']['body'],
-                'slug' => $data['Comment']['slug']
-            ]);
-            $post = Posts::find($data['Comment']['on_post']);
+            $comment = new Comments($data);
+
+            $post = Posts::find($data['on_post']);
             $post = $post->comments()->save($comment);
             return true;
         } catch(Exception $e){

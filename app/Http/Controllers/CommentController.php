@@ -14,19 +14,19 @@ class CommentController extends Controller
         $res = Comments::store($data);
 
         if($res !== true){
-            return redirect($data['Comment']['slug'])->with('message', $res);
+            return redirect($data['slug'])->with('message', $res);
         }
 
-        return redirect($data['Comment']['slug'])->with('message', 'Comment published');
+        return redirect($data['slug'])->with('message', 'Comment published');
 
     }
 
     private function __parseRequest(Request $request){
 
-        $data['Comment']['slug'] = $request->input('slug');
-        $data['Comment']['from_user'] = $request->user()->id;
-        $data['Comment']['on_post'] = $request->input('on_post');
-        $data['Comment']['body'] = $request->input('body');
+        $data['slug'] = $request->input('slug');
+        $data['from_user'] = $request->user()->id;
+        $data['on_post'] = $request->input('on_post');
+        $data['body'] = $request->input('body');
 
         return $data;
     }

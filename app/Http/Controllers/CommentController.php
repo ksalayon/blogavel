@@ -10,16 +10,24 @@ class CommentController extends Controller
 {
     public function store(Request $request)
     {
-        $slug = $request->input('slug');
-        $comment = new Comments([
-            'from_user' => $request->user()->id,
-            'on_post' => $request->input('on_post'),
-            'body' => $request->input('body')
-        ]);
+        $data = $this->__parseRequest($request);
+        $res = Comments::store($data);
 
-        $post = Posts::find($request->input('on_post'));
-        $post = $post->comments()->save($comment);
-        return redirect($slug)->with('message', 'Comment published');
+        if($res !== true){
+            return redirect($data['Comment']['slug'])->with('message', $res);
+        }
 
+        return redirect($data['Comment']['slug'])->with('message', 'Comment published');
+
+    }
+
+    private function __parseRequest(Request $request){
+
+        $data['Comment']['slug'] = $request->input('slug');
+        $data['Comment']['from_user'] = $request->user()->id;
+        $data['Comment']['on_post'] = $request->input('on_post');
+        $data['Comment']['body'] = $request->input('body');
+
+        return $data;
     }
 }

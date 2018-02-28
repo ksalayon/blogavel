@@ -19,14 +19,32 @@ class Comments extends Eloquent {
         return $this->belongsTo('App\Posts','on_post');
     }
 
+    public static function store($data)
+    {
+        try{
+            $comment = new Comments([
+                'from_user' => $data['Comment']['from_user'],
+                'on_post' => $data['Comment']['on_post'],
+                'body' => $data['Comment']['body'],
+                'slug' => $data['Comment']['slug']
+            ]);
+            $post = Posts::find($data['Comment']['on_post']);
+            $post = $post->comments()->save($comment);
+            return true;
+        } catch(Exception $e){
+            return $e->getMessage();
+        }
 
-    public static function getAllByUser($userId, $take = 5)
+
+    }
+
+    public static function getAllByUser($userId, $take = 3)
     {
         $qPosts = Posts::where('comments.from_user', '=', (int)$userId)
             ->where('active', '=', 1)
             ->select('title', 'slug', 'comments')
             ->orderBy('created_at','desc')
-            ->paginate(3);
+            ->paginate($take);
 
         $posts = [];
         foreach($qPosts as $pKey => $pVal){

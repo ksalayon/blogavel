@@ -55,9 +55,19 @@ class UserController extends Controller {
     public function profile(Request $request, $id)
     {
         $data['user'] = User::find($id);
-        if (!$data['user']) {
-            return redirect('/');
+
+        try {
+            if (!$data['user']) {
+                return redirect('/');
+            }
+
+            $profile = $data['user']->getProfile();
+
+        } catch (Exception $e) {
+            return redirect('/')->withErrors($e->getMessage());
         }
+
+        $data = array_merge($data, $profile);
 
         if ($request->user() && $data['user']->id == $request->user()->id) {
             $data['author'] = true;
@@ -65,12 +75,6 @@ class UserController extends Controller {
             $data['author'] = null;
         }
 
-        $data['comments_count'] = $data['user']->comments()->count();
-        $data['posts_count'] = Posts::getAllByUser($id)->count();
-        $data['posts_active_count'] = Posts::getAllByUser($id, Posts::PUBLISHED)->count();
-        $data['posts_draft_count'] = $data['posts_count'] - $data['posts_active_count'];
-        $data['latest_posts'] = Posts::getAllByUser($id);
-        $data['latest_comments'] = Comments::getAllByUser($id, 1);
         return view('admin.profile', $data);
     }
 

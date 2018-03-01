@@ -1,6 +1,8 @@
 <?php namespace App;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use App\Posts;
+use App\Comments;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -61,4 +63,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		}
 		return false;
 	}
+
+    public function getProfile()
+    {
+        try {
+            $data['comments_count'] = $this->comments()->count();
+            $data['posts_count'] = Posts::getAllByUser($this->id)->count();
+            $data['posts_active_count'] = Posts::getAllByUser($this->id, Posts::PUBLISHED)->count();
+            $data['posts_draft_count'] = $data['posts_count'] - $data['posts_active_count'];
+            $data['latest_posts'] = Posts::getAllByUser($this->id);
+            $data['latest_comments'] = Comments::getAllByUser($this->id, 1);
+        } catch(Exception $e) {
+            throw new Exception('Something went wrong with the request. Please try again later.');
+        }
+
+
+        return $data;
+    }
 }

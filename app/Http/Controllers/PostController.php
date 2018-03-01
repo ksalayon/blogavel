@@ -24,12 +24,9 @@ class PostController extends Controller
     public function create(Request $request)
     {
         // if user can post i.e. user is admin or author
-        if($request->user()->can_post())
-        {
+        if($request->user()->can_post()) {
             return view('posts.create');
-        }
-        else
-        {
+        } else {
             return redirect('/')->withErrors('You do not have sufficient permissions for writing post.');
         }
     }
@@ -54,10 +51,10 @@ class PostController extends Controller
     public function show($slug)
     {
         $post = Posts::where('slug',$slug)->first();
-        if(!$post)
-        {
+        if(!$post) {
             return redirect('/')->withErrors('requested page not found');
         }
+
         $comments = $post->comments;
         return view('posts.show')->withPost($post)->withComments($comments);
     }
@@ -95,9 +92,7 @@ class PostController extends Controller
             }
 
             return redirect($landing)->withMessage($message);
-        }
-        else
-        {
+        } else {
             return redirect('/')->withErrors('you do not have permissions to update this post.');
         }
     }
@@ -105,13 +100,11 @@ class PostController extends Controller
     public function destroy(Request $request, $id)
     {
         $post = Posts::find($id);
-        if($post && ($post->author_id == $request->user()->id || $request->user()->is_admin()))
-        {
+        if($post && ($post->author_id == $request->user()->id || $request->user()->is_admin())) {
             $post->delete();
             $data['message'] = 'Post deleted Successfully';
         }
-        else
-        {
+        else {
             $data['errors'] = 'Invalid Operation. You do not have permissions to delete this post';
         }
         return redirect('/')->with($data);

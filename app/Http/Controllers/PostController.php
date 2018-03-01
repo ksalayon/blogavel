@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
@@ -34,24 +36,18 @@ class PostController extends Controller
 
     public function store(PostFormRequest $request)
     {
-        $post = new Posts();
-        $post->title = $request->get('title');
-        $post->body = $request->get('body');
-        $post->slug = str_slug($post->title);
-        $post->author_id = Auth::id();
-        if($request->has('save'))
-        {
-            $post->active = 0;
-            $message = 'Post saved successfully';
-        }
-        else
-        {
-            $post->active = 1;
-            $message = 'Post published successfully';
+        $data = $this->__parseRequest($request);
+
+        $message = ($data['active'] === 1) ? 'Post published successfully'
+            : 'Post saved successfully';
+
+        try {
+            Posts::store($data);
+        } catch(Exception $e) {
+            return redirect('edit/'. $data['slug'])->withMessage($e->getMessage());
         }
 
-        $post->save();
-        return redirect('edit/'.$post->slug)->withMessage($message);
+        return redirect('edit/'. $data['slug'])->withMessage($message);
 
     }
 
@@ -78,41 +74,26 @@ class PostController extends Controller
 
     public function update(Request $request)
     {
-        //
         $post_id = $request->input('post_id');
         $post = Posts::find($post_id);
-        if($post && ($post->author_id == $request->user()->id || $request->user()->is_admin()))
-        {
-            $title = $request->input('title');
-            $slug = str_slug($title);
-            $duplicate = Posts::where('slug',$slug)->first();
-            if($duplicate)
-            {
-                if($duplicate->id != $post_id)
-                {
-                    return redirect('edit/'.$post->slug)->withErrors('Title already exists.')->withInput();
-                }
-                else
-                {
-                    $post->slug = $slug;
-                }
+        if($post && ($post->author_id == $request->user()->id || $request->user()->is_admin())) {
+
+            $data = $this->__parseRequest($request, $post);
+            $landing = $post->slug;
+            $message = ($data['active'] === 1) ? 'Post published successfully'
+                : 'Post updated successfully';
+
+            try {
+                $post->upd($data);
+            } catch (Exception $e) {
+                $message = $e->getMessage();
+                $landing = 'edit/' . $post->slug;
+
+                return redirect($landing)->withErrors($message)->withInput(
+                    $request->except('post_id')
+                );
             }
 
-            $post->title = $title;
-            $post->body = $request->input('body');
-
-            if($request->has('save'))
-            {
-                $post->active = 0;
-                $message = 'Post saved successfully';
-                $landing = 'edit/'.$post->slug;
-            }
-            else {
-                $post->active = 1;
-                $message = 'Post updated successfully';
-                $landing = $post->slug;
-            }
-            $post->save();
             return redirect($landing)->withMessage($message);
         }
         else
@@ -134,5 +115,18 @@ class PostController extends Controller
             $data['errors'] = 'Invalid Operation. You do not have permissions to delete this post';
         }
         return redirect('/')->with($data);
+    }
+
+    private function __parseRequest($request, Posts $post = null)
+    {
+
+        $data['title'] = ($request->get('title')) ?? $request->input('title');
+        $data['body'] = ($request->get('body')) ?? $request->input('body');
+        $data['slug'] = str_slug($data['title']);
+        if($post === NULL || empty($post->id)) {
+            $data['author_id'] = Auth::id();
+        }
+        $data['active'] = ($request->has('save')) ? 0 : 1;
+        return $data;
     }
 }

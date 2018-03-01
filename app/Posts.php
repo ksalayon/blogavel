@@ -1,5 +1,6 @@
 <?php namespace App;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Exception;
 
 class Posts extends Eloquent {
 
@@ -37,6 +38,50 @@ class Posts extends Eloquent {
             ->where('active', $operatorActive, $valueActive)
             ->orderBy('created_at','desc')
             ->paginate(5);
+    }
+
+    public static function store($data)
+    {
+        $post = new self($data);
+
+        try {
+            $post->save();
+            return true;
+        } catch(Exception $e) {
+            throw new Exception('Something went wrong when saving. Please try again.');
+        }
+
+    }
+
+    public function upd($data)
+    {
+        $title = $data['title'];
+        $slug = str_slug($title);
+        $duplicate = Posts::where('slug',$slug)->first();
+        if($duplicate)
+        {
+            if($duplicate->id != $this->id)
+            {
+                throw new Exception('Title already exists.');
+            }
+            else
+            {
+                $post->slug = $slug;
+            }
+        }
+
+        $this->title = $title;
+        $this->body = $data['body'];
+        $this->active = $data['active'];
+
+        try{
+            $this->save();
+            return true;
+        } catch(Exception $e) {
+            throw new Exception('Something went wrong with the update. Please try again.');
+        }
+
+
     }
 
 
